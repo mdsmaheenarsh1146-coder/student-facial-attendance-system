@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Attendance Approvals{% endblock %}
+
+{% block content %}
+
+<h2>Attendance Approvals</h2>
+
+<p>Pending: {{ summary.pending }}</p>
+<p>Approved: {{ summary.approved }}</p>
+<p>Rejected: {{ summary.rejected }}</p>
+
+<hr>
+
+<h3>Pending Attendance Records</h3>
+
+{% for record in pending_records %}
+
+<div>
+    <p><strong>Student:</strong> {{ record.student.username }}</p>
+
+    <p><strong>Date:</strong> {{ record.attendance_date }}</p>
+
+    <p><strong>Status:</strong> {{ record.get_status_display }}</p>
+
+    <!-- Approve Button -->
+    <form method="post" action="{% url 'approve_attendance' record.id %}" style="display: inline;">
+
+        {% csrf_token %}
+
+        <button type="submit">Approve</button>
+
+    </form>
+
+    <!-- Reject Button -->
+    <form method="post" action="{% url 'reject_attendance' record.id %}" style="display: inline;"
+        onsubmit="return confirm('Are you sure you want to reject this attendance?');">
+
+        {% csrf_token %}
+
+        <button type="submit">Reject</button>
+
+    </form>
+
+</div>
+
+<hr>
+
+
+{% empty %}
+
+<p>No pending attendance.</p>
+
+
+{% endfor %}
+
+{% endblock %}

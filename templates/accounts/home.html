@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+    <h2>Welcome, {{ user.username }}</h2>
+
+    <p>Role: {{ user.get_role_display }}</p>
+
+  {% if user.role == "STUDENT" %}
+    <p>Student account</p>
+    <a href="{% url 'submit_attendance' %}">Submit Attendance</a><br>
+    <a href="{% url 'attendance_history' %}">My Attendance</a>
+  {% endif %}
+
+{% else %}
+
+    <h2>Welcome to Attendance System</h2>
+
+    <p>Please login or signup.</p>
+
+{% endif %}
+
+{% endblock %}

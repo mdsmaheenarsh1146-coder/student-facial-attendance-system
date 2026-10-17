@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Attendance{% endblock %}
+
+{% block content %}
+
+<h2>Submit Attendance</h2>
+
+<p>Student: {{ user.username }}</p>
+
+{% if error %}
+
+    <p>{{ error }}</p>
+
+{% else %}
+
+    <h3>Face Verification</h3>
+
+    <p>Allow camera access and capture your face.</p>
+
+    <video id="camera" width="400" height="300" autoplay></video>
+
+    <br><br>
+
+    <button type="button" id="startCamera">
+        Start Camera
+    </button>
+
+    <button type="button" id="capture">
+        Capture Image
+    </button>
+
+    <br><br>
+
+    <canvas id="preview" width="400" height="300"></canvas>
+
+    <p id="message"></p>
+
+    <br>
+
+    <form method="post" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <input
+            type="file"
+            name="face_image"
+            id="faceImage"
+            hidden
+        >
+
+        <button type="submit">
+            Submit Attendance
+        </button>
+
+    </form>
+
+    <script>
+        startCamera.onclick = async function() {
+            camera.srcObject = await navigator.mediaDevices.getUserMedia({
+                video: true
+            });
+        };
+
+        capture.onclick = function() {
+            preview.getContext("2d").drawImage(
+                camera,
+                0,
+                0,
+                400,
+                300
+            );
+
+            preview.toBlob(function(blob) {
+                const file = new File([blob], "face.jpg", {
+                    type: "image/jpeg"
+                });
+
+                const data = new DataTransfer();
+
+                data.items.add(file);
+
+                faceImage.files = data.files;
+            });
+
+            message.textContent = "Image captured.";
+        };
+    </script>
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}All Users{% endblock %}
+
+{% block content %}
+
+<h2>All Registered Users</h2>
+
+<p>
+    <a href="{% url 'home' %}">Home</a> |
+    <a href="{% url 'student_approvals' %}">Student Approvals</a>
+</p>
+
+<hr>
+
+{% if messages %}
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+{% if users %}
+
+    {% for user in users %}
+
+        <div class="user-card">
+
+            <h3>{{ user.username }}</h3>
+
+            <p>
+                <strong>Full Name:</strong>
+                {{ user.first_name }} {{ user.last_name }}
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                {{ user.email }}
+            </p>
+
+            <p>
+                <strong>Role:</strong>
+                {{ user.get_role_display }}
+            </p>
+
+            <p>
+                <strong>Approval Status:</strong>
+
+                {% if user.is_approved %}
+                    Approved
+                {% else %}
+                    Pending Approval
+                {% endif %}
+            </p>
+
+            <p>
+                <strong>Account Status:</strong>
+
+                {% if user.is_active %}
+                    Active
+                {% else %}
+                    Inactive
+                {% endif %}
+            </p>
+
+            {% if user.face_image %}
+                <p><strong>Registered Face:</strong></p>
+
+                <img
+                    src="{{ user.face_image.url }}"
+                    alt="Registered face"
+                    width="120"
+                    height="120"
+                    style="object-fit: cover; border-radius: 8px;"
+                >
+            {% else %}
+                <p>No face image uploaded.</p>
+            {% endif %}
+
+            <br><br>
+
+            {% if user.id == request.user.id %}
+
+                <a href="{% url 'edit_user' user.id %}">
+                    <button type="button">Edit My Account</button>
+                </a>
+
+                <p><em>You cannot delete your own account here.</em></p>
+
+            {% elif user.role == "SUPERADMIN" %}
+
+                <p><em>Another Superadmin's account cannot be modified here.</em></p>
+
+            {% else %}
+
+                <a href="{% url 'edit_user' user.id %}">
+                    <button type="button">Edit User</button>
+                </a>
+
+                <form
+                    method="post"
+                    action="{% url 'delete_user' user.id %}"
+                    style="display: inline;"
+                    onsubmit="return confirm('Are you sure you want to permanently delete this user?');"
+                >
+                    {% csrf_token %}
+
+                    <button type="submit">
+                        Delete User
+                    </button>
+                </form>
+
+            {% endif %}
+
+        </div>
+
+        <hr>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>No registered users found.</p>
+
+{% endif %}
+
+{% endblock %}

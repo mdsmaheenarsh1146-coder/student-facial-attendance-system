@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Student Approvals{% endblock %}
+
+{% block content %}
+
+<h2>Student Approvals</h2>
+
+<p>
+    <a href="{% url 'all_users' %}">Show All Users</a>
+</p>
+
+<hr>
+
+{% if pending_students %}
+
+    {% for student in pending_students %}
+
+        <div>
+            <h3>{{ student.username }}</h3>
+
+            <p><strong>Email:</strong> {{ student.email }}</p>
+
+            <p><strong>Role:</strong> {{ student.get_role_display }}</p>
+
+            {% if student.face_image %}
+                <p><strong>Registered Face:</strong></p>
+
+                <img src="{{ student.face_image.url }}"
+                     alt="Registered face of {{ student.username }}"
+                     width="200">
+            {% else %}
+                <p>No face image uploaded.</p>
+            {% endif %}
+
+            <br><br>
+
+            <!-- Approve Student -->
+            <form method="post"
+                  action="{% url 'approve_student' student.id %}"
+                  style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Approve</button>
+            </form>
+
+            <!-- Reject Student -->
+            <form method="post"
+                  action="{% url 'reject_student' student.id %}"
+                  style="display:inline;"
+                  onsubmit="return confirm('Are you sure you want to reject this student?');">
+                {% csrf_token %}
+                <button type="submit">Reject</button>
+            </form>
+
+        </div>
+
+        <hr>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>No pending student registrations.</p>
+
+{% endif %}
+
+{% endblock %}

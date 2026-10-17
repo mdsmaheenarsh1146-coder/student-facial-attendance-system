@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+
+<h2>User Profile</h2>
+
+<p>Username: {{ user.username }}</p>
+
+<p>First Name: {{ user.first_name }}</p>
+
+<p>Last Name: {{ user.last_name }}</p>
+
+<p>Email: {{ user.email }}</p>
+
+<p>Role: {{ user.get_role_display }}</p>
+
+<p>Approved: {{ user.is_approved }}</p>
+
+{% if user.role == "STUDENT" %}
+    <p>Face image: {{ user.face_image }}</p>
+{% endif %}
+
+{% endblock %}

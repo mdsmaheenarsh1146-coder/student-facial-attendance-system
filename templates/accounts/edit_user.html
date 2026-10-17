@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block content %}
+
+<h2>Edit User</h2>
+
+{% if messages %}
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+
+    <p>
+        <label>Username:</label><br>
+        <input type="text"
+               name="username"
+               value="{{ edit_user.username }}"
+               required>
+    </p>
+
+    <p>
+        <label>First Name:</label><br>
+        <input type="text"
+               name="first_name"
+               value="{{ edit_user.first_name }}">
+    </p>
+
+    <p>
+        <label>Last Name:</label><br>
+        <input type="text"
+               name="last_name"
+               value="{{ edit_user.last_name }}">
+    </p>
+
+    <p>
+        <label>Email:</label><br>
+        <input type="email"
+               name="email"
+               value="{{ edit_user.email }}"
+               required>
+    </p>
+
+    <p>
+        <label>New Password:</label><br>
+        <input type="password"
+               name="password"
+               placeholder="Leave blank to keep current password">
+    </p>
+
+    <button type="submit">Save Changes</button>
+
+    <a href="{% url 'all_users' %}">Cancel</a>
+</form>
+
+{% endblock %}
