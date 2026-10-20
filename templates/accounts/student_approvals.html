@@ -1,67 +1,451 @@
 {% extends "base.html" %}
 
-{% block title %}Student Approvals{% endblock %}
+{% block title %}Student Approvals | Student Facial Attendance System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .approvals-page {
+        padding: 28px 0 40px;
+    }
+
+    .approvals-hero {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 26px;
+        padding: 30px;
+        color: #ffffff;
+        background: linear-gradient(120deg, #063b50, #075b68 60%, #079c87);
+        border-radius: 22px;
+        box-shadow: 0 14px 35px rgba(15, 70, 100, 0.14);
+    }
+
+    .approvals-hero h1 {
+        margin: 0 0 8px;
+        font-size: clamp(25px, 3vw, 34px);
+        line-height: 1.25;
+    }
+
+    .approvals-hero p {
+        margin: 0;
+        color: #d7e9ee;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .approvals-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        color: #d5fff3;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .approvals-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .approvals-toolbar h2 {
+        margin: 0;
+        color: #10314b;
+        font-size: 21px;
+    }
+
+    .approvals-toolbar p {
+        margin: 5px 0 0;
+        color: #668096;
+        font-size: 13px;
+    }
+
+    .all-users-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 11px 16px;
+        color: #087d6d;
+        background: #e8faf4;
+        border: 1px solid #c8f0e2;
+        border-radius: 11px;
+        font-size: 13px;
+        font-weight: 750;
+        text-decoration: none;
+        transition: background 0.2s, transform 0.2s;
+    }
+
+    .all-users-link:hover {
+        color: #056757;
+        background: #d9f7ed;
+        transform: translateY(-1px);
+    }
+
+    .student-approval-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+    .student-approval-card {
+        min-width: 0;
+        overflow: hidden;
+        background: #ffffff;
+        border: 1px solid #dcefeb;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(15, 70, 100, 0.07);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .student-approval-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 35px rgba(15, 70, 100, 0.12);
+    }
+
+    .student-card-top {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 22px;
+        background: linear-gradient(135deg, #f0fbf8, #f4f8ff);
+        border-bottom: 1px solid #e0efec;
+    }
+
+    .student-avatar {
+        width: 58px;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        overflow: hidden;
+        color: #078b78;
+        background: linear-gradient(135deg, #dffaf0, #e8f7ff);
+        border: 2px solid #ffffff;
+        border-radius: 17px;
+        box-shadow: 0 5px 14px rgba(7, 139, 120, 0.12);
+        font-size: 25px;
+        font-weight: 800;
+    }
+
+    .student-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .student-card-top h3 {
+        margin: 0 0 5px;
+        overflow-wrap: anywhere;
+        color: #10314b;
+        font-size: 18px;
+    }
+
+    .student-pending-badge {
+        display: inline-block;
+        padding: 5px 9px;
+        color: #9a670e;
+        background: #fff4d9;
+        border: 1px solid #f5e2b3;
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .student-card-body {
+        padding: 22px;
+    }
+
+    .student-detail {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 14px;
+        color: #668096;
+        font-size: 13px;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+    }
+
+    .student-detail:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .student-detail-label {
+        min-width: 65px;
+        color: #25455e;
+        font-weight: 750;
+    }
+
+    .face-preview-heading {
+        margin: 22px 0 10px;
+        color: #25455e;
+        font-size: 13px;
+        font-weight: 750;
+    }
+
+    .face-preview {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 180px;
+        padding: 10px;
+        overflow: hidden;
+        background: #f5fbfa;
+        border: 1px dashed #b9dcd4;
+        border-radius: 14px;
+    }
+
+    .face-preview img {
+        display: block;
+        max-width: 100%;
+        width: 200px;
+        max-height: 240px;
+        object-fit: contain;
+        border-radius: 10px;
+    }
+
+    .no-face-image {
+        color: #8094a3;
+        font-size: 13px;
+        text-align: center;
+        line-height: 1.7;
+    }
+
+    .student-card-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 22px;
+    }
+
+    .student-action-form {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .student-action-button {
+        width: 100%;
+        min-height: 44px;
+        padding: 11px 14px;
+        border: 0;
+        border-radius: 11px;
+        font-size: 13px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .student-action-button:hover {
+        transform: translateY(-1px);
+    }
+
+    .approve-button {
+        color: #ffffff;
+        background: linear-gradient(110deg, #078b78, #20c69b);
+        box-shadow: 0 6px 15px rgba(7, 139, 120, 0.16);
+    }
+
+    .approve-button:hover {
+        box-shadow: 0 9px 20px rgba(7, 139, 120, 0.25);
+    }
+
+    .reject-button {
+        color: #b42336;
+        background: #fff0f1;
+        border: 1px solid #ffd2d7;
+    }
+
+    .reject-button:hover {
+        background: #ffe3e6;
+    }
+
+    .no-pending-card {
+        padding: 48px 25px;
+        text-align: center;
+        background: #ffffff;
+        border: 1px solid #dcefeb;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(15, 70, 100, 0.06);
+    }
+
+    .no-pending-icon {
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 18px;
+        color: #078b78;
+        background: #e8faf4;
+        border-radius: 22px;
+        font-size: 30px;
+    }
+
+    .no-pending-card h3 {
+        margin: 0 0 8px;
+        color: #10314b;
+        font-size: 21px;
+    }
+
+    .no-pending-card p {
+        margin: 0;
+        color: #668096;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    @media (max-width: 800px) {
+        .student-approval-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .approvals-hero {
+            padding: 25px 22px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .approvals-page {
+            padding-top: 15px;
+        }
+
+        .approvals-hero {
+            padding: 22px 18px;
+            border-radius: 17px;
+        }
+
+        .student-card-top,
+        .student-card-body {
+            padding: 18px;
+        }
+
+        .student-card-actions {
+            flex-direction: column;
+        }
+
+        .student-action-form {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="approvals-page">
 
-<h2>Student Approvals</h2>
-
-<p>
-    <a href="{% url 'all_users' %}">Show All Users</a>
-</p>
-
-<hr>
-
-{% if pending_students %}
-
-    {% for student in pending_students %}
-
+    <section class="approvals-hero">
         <div>
-            <h3>{{ student.username }}</h3>
-
-            <p><strong>Email:</strong> {{ student.email }}</p>
-
-            <p><strong>Role:</strong> {{ student.get_role_display }}</p>
-
-            {% if student.face_image %}
-                <p><strong>Registered Face:</strong></p>
-
-                <img src="{{ student.face_image.url }}"
-                     alt="Registered face of {{ student.username }}"
-                     width="200">
-            {% else %}
-                <p>No face image uploaded.</p>
-            {% endif %}
-
-            <br><br>
-
-            <!-- Approve Student -->
-            <form method="post"
-                  action="{% url 'approve_student' student.id %}"
-                  style="display:inline;">
-                {% csrf_token %}
-                <button type="submit">Approve</button>
-            </form>
-
-            <!-- Reject Student -->
-            <form method="post"
-                  action="{% url 'reject_student' student.id %}"
-                  style="display:inline;"
-                  onsubmit="return confirm('Are you sure you want to reject this student?');">
-                {% csrf_token %}
-                <button type="submit">Reject</button>
-            </form>
-
+            <h1>Student Approvals</h1>
+            <p>Review student registrations and approve eligible accounts.</p>
         </div>
 
-        <hr>
+        <div class="approvals-count">
+            ⏳ Pending student review
+        </div>
+    </section>
 
-    {% endfor %}
+    <div class="approvals-toolbar">
+        <div>
+            <h2>Registration Requests</h2>
+            <p>Review the student details and registered face image before taking action.</p>
+        </div>
 
-{% else %}
+        <a href="{% url 'all_users' %}" class="all-users-link">
+            👥 Show All Users <span aria-hidden="true">→</span>
+        </a>
+    </div>
 
-    <p>No pending student registrations.</p>
+    {% if pending_students %}
+        <div class="student-approval-grid">
+            {% for student in pending_students %}
+                <article class="student-approval-card">
 
-{% endif %}
+                    <div class="student-card-top">
+                        <div class="student-avatar" aria-hidden="true">
+                            {% if student.face_image %}
+                                <img src="{{ student.face_image.url }}"
+                                     alt="Registered face of {{ student.username }}">
+                            {% else %}
+                                {{ student.username|first|upper }}
+                            {% endif %}
+                        </div>
 
+                        <div>
+                            <h3>{{ student.username }}</h3>
+                            <span class="student-pending-badge">Pending approval</span>
+                        </div>
+                    </div>
+
+                    <div class="student-card-body">
+                        <div class="student-detail">
+                            <span class="student-detail-label">Email</span>
+                            <span>{{ student.email|default:"Not provided" }}</span>
+                        </div>
+
+                        <div class="student-detail">
+                            <span class="student-detail-label">Role</span>
+                            <span>{{ student.get_role_display }}</span>
+                        </div>
+
+                        <div class="face-preview-heading">Registered Face Image</div>
+                        <div class="face-preview">
+                            {% if student.face_image %}
+                                <img src="{{ student.face_image.url }}"
+                                     alt="Registered face of {{ student.username }}">
+                            {% else %}
+                                <div class="no-face-image">
+                                    No face image uploaded for this student.
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="student-card-actions">
+                            <form method="post"
+                                  action="{% url 'approve_student' student.id %}"
+                                  class="student-action-form">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="student-action-button approve-button">
+                                    ✓ Approve Student
+                                </button>
+                            </form>
+
+                            <form method="post"
+                                  action="{% url 'reject_student' student.id %}"
+                                  class="student-action-form"
+                                  onsubmit="return confirm('Are you sure you want to reject this student?');">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="student-action-button reject-button">
+                                    ✕ Reject Student
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <section class="no-pending-card">
+            <div class="no-pending-icon" aria-hidden="true">✓</div>
+            <h3>You're all caught up!</h3>
+            <p>There are no pending student registrations to review right now.</p>
+        </section>
+    {% endif %}
+
+</div>
 {% endblock %}

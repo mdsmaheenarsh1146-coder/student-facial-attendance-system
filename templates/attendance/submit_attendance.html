@@ -2,91 +2,558 @@
 
 {% block title %}Submit Attendance{% endblock %}
 
+{% block extra_css %}
+<style>
+    .attendance-page {
+        max-width: 850px;
+        margin: 35px auto;
+        padding: 0 20px;
+    }
+
+    .attendance-card {
+        background: #fff;
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(15, 118, 110, 0.10);
+        border: 1px solid #e0f2f1;
+    }
+
+    .attendance-header {
+        background: linear-gradient(135deg, #0f766e, #115e59);
+        color: #fff;
+        padding: 30px 25px;
+        text-align: center;
+    }
+
+    .attendance-header h2 {
+        margin: 0 0 10px;
+        font-size: 28px;
+    }
+
+    .attendance-header p {
+        margin: 0;
+        color: #ccfbf1;
+        font-size: 15px;
+    }
+
+    .attendance-body {
+        padding: 30px;
+    }
+
+    .student-info {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        background: #f0fdfa;
+        border: 1px solid #ccfbf1;
+        border-radius: 14px;
+        padding: 16px 18px;
+        margin-bottom: 28px;
+    }
+
+    .student-icon {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ccfbf1;
+        color: #0f766e;
+        border-radius: 50%;
+        font-size: 21px;
+        flex-shrink: 0;
+    }
+
+    .student-label {
+        color: #64748b;
+        font-size: 13px;
+        margin-bottom: 4px;
+    }
+
+    .student-name {
+        color: #115e59;
+        font-size: 16px;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    .section-title {
+        color: #115e59;
+        font-size: 21px;
+        margin: 0 0 8px;
+    }
+
+    .section-description {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 0 0 22px;
+    }
+
+    .camera-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+        margin-bottom: 24px;
+    }
+
+    .camera-panel {
+        min-width: 0;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 16px;
+        text-align: center;
+    }
+
+    .camera-panel h4 {
+        color: #334155;
+        font-size: 15px;
+        margin: 0 0 14px;
+    }
+
+    .media-frame {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        background: #e2e8f0;
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #camera,
+    #preview {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border: 0;
+    }
+
+    #preview {
+        background: #f1f5f9;
+    }
+
+    .camera-placeholder {
+        color: #64748b;
+        font-size: 13px;
+        padding: 12px;
+    }
+
+    .camera-actions {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s, background 0.2s;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-primary {
+        background: #0f766e;
+        color: #fff;
+    }
+
+    .btn-primary:hover {
+        background: #115e59;
+    }
+
+    .btn-secondary {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .btn-secondary:hover {
+        background: #bfdbfe;
+    }
+
+    .btn-submit {
+        width: 100%;
+        background: linear-gradient(135deg, #0f766e, #115e59);
+        color: #fff;
+        padding: 15px 20px;
+        font-size: 16px;
+    }
+
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .capture-message {
+        min-height: 24px;
+        text-align: center;
+        color: #0f766e;
+        font-size: 14px;
+        font-weight: 600;
+        margin: 12px 0 20px;
+    }
+
+    .capture-message.error {
+        color: #b91c1c;
+    }
+
+    .capture-message.success {
+        color: #047857;
+    }
+
+    .help-box {
+        display: flex;
+        gap: 12px;
+        background: #eff6ff;
+        border: 1px solid #dbeafe;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 25px;
+        color: #1e40af;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .help-box strong {
+        display: block;
+        margin-bottom: 3px;
+    }
+
+    .error-box {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #b91c1c;
+        border-radius: 12px;
+        padding: 18px;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+    }
+
+    .submit-divider {
+        border: 0;
+        border-top: 1px solid #e2e8f0;
+        margin: 25px 0;
+    }
+
+    @media (max-width: 600px) {
+        .attendance-page {
+            margin: 20px auto;
+            padding: 0 12px;
+        }
+
+        .attendance-header {
+            padding: 25px 18px;
+        }
+
+        .attendance-header h2 {
+            font-size: 24px;
+        }
+
+        .attendance-body {
+            padding: 20px 16px;
+        }
+
+        .camera-layout {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .camera-actions {
+            flex-direction: column;
+        }
+
+        .camera-actions .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="attendance-page">
+    <div class="attendance-card">
 
-<h2>Submit Attendance</h2>
+        <div class="attendance-header">
+            <h2>Submit Attendance</h2>
+            <p>Verify your identity using your camera</p>
+        </div>
 
-<p>Student: {{ user.username }}</p>
+        <div class="attendance-body">
 
-{% if error %}
+            <div class="student-info">
+                <div class="student-icon" aria-hidden="true">👤</div>
+                <div>
+                    <div class="student-label">Logged-in student</div>
+                    <div class="student-name">{{ user.username }}</div>
+                </div>
+            </div>
 
-    <p>{{ error }}</p>
+            {% if error %}
 
-{% else %}
+                <div class="error-box" role="alert">
+                    <strong>Unable to submit attendance</strong>
+                    <p>{{ error }}</p>
+                </div>
 
-    <h3>Face Verification</h3>
+            {% else %}
 
-    <p>Allow camera access and capture your face.</p>
+                <h3 class="section-title">Face Verification</h3>
 
-    <video id="camera" width="400" height="300" autoplay></video>
+                <p class="section-description">
+                    Allow camera access, position your face clearly in the frame,
+                    and capture an image before submitting your attendance.
+                </p>
 
-    <br><br>
+                <div class="camera-layout">
 
-    <button type="button" id="startCamera">
-        Start Camera
-    </button>
+                    <div class="camera-panel">
+                        <h4>Live Camera</h4>
+                        <div class="media-frame">
+                            <video
+                                id="camera"
+                                autoplay
+                                playsinline
+                                muted
+                                aria-label="Live camera feed"
+                            ></video>
 
-    <button type="button" id="capture">
-        Capture Image
-    </button>
+                            <div id="cameraPlaceholder" class="camera-placeholder">
+                                Start the camera to see your face here.
+                            </div>
+                        </div>
+                    </div>
 
-    <br><br>
+                    <div class="camera-panel">
+                        <h4>Captured Image</h4>
+                        <div class="media-frame">
+                            <canvas
+                                id="preview"
+                                width="400"
+                                height="300"
+                                aria-label="Captured face preview"
+                            ></canvas>
+                        </div>
+                    </div>
 
-    <canvas id="preview" width="400" height="300"></canvas>
+                </div>
 
-    <p id="message"></p>
+                <div class="camera-actions">
+                    <button
+                        type="button"
+                        id="startCamera"
+                        class="btn btn-primary"
+                    >
+                        Start Camera
+                    </button>
 
-    <br>
+                    <button
+                        type="button"
+                        id="capture"
+                        class="btn btn-secondary"
+                        disabled
+                    >
+                        Capture Image
+                    </button>
+                </div>
 
-    <form method="post" enctype="multipart/form-data">
+                <p
+                    id="message"
+                    class="capture-message"
+                    role="status"
+                    aria-live="polite"
+                >
+                    Start your camera to begin.
+                </p>
 
-        {% csrf_token %}
+                <div class="help-box">
+                    <span aria-hidden="true">ℹ️</span>
+                    <div>
+                        <strong>Tips for successful verification</strong>
+                        Make sure your face is well-lit, look directly at the camera,
+                        and avoid covering your face.
+                    </div>
+                </div>
 
-        <input
-            type="file"
-            name="face_image"
-            id="faceImage"
-            hidden
-        >
+                <hr class="submit-divider">
 
-        <button type="submit">
-            Submit Attendance
-        </button>
+                <form method="post" id="attendanceForm">
+                    {% csrf_token %}
 
-    </form>
+                    <input
+                        type="hidden"
+                        name="face_image_data"
+                        id="faceImageData"
+                    >
 
-    <script>
-        startCamera.onclick = async function() {
-            camera.srcObject = await navigator.mediaDevices.getUserMedia({
-                video: true
-            });
-        };
+                    <button
+                        type="submit"
+                        id="submitAttendance"
+                        class="btn btn-submit"
+                        disabled
+                    >
+                        Submit Attendance
+                    </button>
+                </form>
 
-        capture.onclick = function() {
-            preview.getContext("2d").drawImage(
-                camera,
-                0,
-                0,
-                400,
-                300
-            );
+                <script>
+                    (function () {
+                        const camera = document.getElementById("camera");
+                        const preview = document.getElementById("preview");
+                        const startCamera = document.getElementById("startCamera");
+                        const capture = document.getElementById("capture");
+                        const faceImageData = document.getElementById("faceImageData");
+                        const message = document.getElementById("message");
+                        const cameraPlaceholder = document.getElementById("cameraPlaceholder");
+                        const attendanceForm = document.getElementById("attendanceForm");
+                        const submitAttendance = document.getElementById("submitAttendance");
 
-            preview.toBlob(function(blob) {
-                const file = new File([blob], "face.jpg", {
-                    type: "image/jpeg"
-                });
+                        let cameraStream = null;
+                        let imageCaptured = false;
 
-                const data = new DataTransfer();
+                        function showMessage(text, type) {
+                            message.textContent = text;
+                            message.className = "capture-message";
 
-                data.items.add(file);
+                            if (type) {
+                                message.classList.add(type);
+                            }
+                        }
 
-                faceImage.files = data.files;
-            });
+                        function stopCamera() {
+                            if (cameraStream) {
+                                cameraStream.getTracks().forEach(function (track) {
+                                    track.stop();
+                                });
 
-            message.textContent = "Image captured.";
-        };
-    </script>
+                                cameraStream = null;
+                            }
 
-{% endif %}
+                            camera.srcObject = null;
+                        }
 
+                        startCamera.addEventListener("click", async function () {
+                            if (
+                                !navigator.mediaDevices ||
+                                !navigator.mediaDevices.getUserMedia
+                            ) {
+                                showMessage(
+                                    "Camera access requires HTTPS or localhost.",
+                                    "error"
+                                );
+                                return;
+                            }
+
+                            startCamera.disabled = true;
+                            showMessage("Requesting camera access...");
+
+                            try {
+                                stopCamera();
+
+                                cameraStream =
+                                    await navigator.mediaDevices.getUserMedia({
+                                        video: { facingMode: "user" },
+                                        audio: false
+                                    });
+
+                                camera.srcObject = cameraStream;
+                                await camera.play();
+
+                                cameraPlaceholder.style.display = "none";
+                                capture.disabled = false;
+
+                                showMessage(
+                                    "Camera is ready. Capture your face.",
+                                    "success"
+                                );
+                            } catch (error) {
+                                let errorMessage =
+                                    "Unable to access the camera. Check browser permissions.";
+
+                                if (error.name === "NotFoundError") {
+                                    errorMessage = "No camera was found on this device.";
+                                } else if (error.name === "NotReadableError") {
+                                    errorMessage =
+                                        "The camera may be in use by another application.";
+                                }
+
+                                showMessage(errorMessage, "error");
+                            } finally {
+                                startCamera.disabled = false;
+                            }
+                        });
+
+                        capture.addEventListener("click", function () {
+                            if (
+                                !cameraStream ||
+                                !camera.videoWidth ||
+                                !camera.videoHeight
+                            ) {
+                                showMessage(
+                                    "Start the camera before capturing your face.",
+                                    "error"
+                                );
+                                return;
+                            }
+
+                            const context = preview.getContext("2d");
+
+                            context.drawImage(
+                                camera,
+                                0,
+                                0,
+                                preview.width,
+                                preview.height
+                            );
+
+                            const imageData = preview.toDataURL("image/jpeg", 0.92);
+
+                            faceImageData.value = imageData;
+                            imageCaptured = true;
+                            submitAttendance.disabled = false;
+
+                            showMessage(
+                                "Image captured successfully. You can now submit attendance.",
+                                "success"
+                            );
+                        });
+
+                        attendanceForm.addEventListener("submit", function (event) {
+                            if (!imageCaptured || !faceImageData.value) {
+                                event.preventDefault();
+
+                                showMessage(
+                                    "Please capture your face before submitting.",
+                                    "error"
+                                );
+                                return;
+                            }
+
+                            submitAttendance.disabled = true;
+                            submitAttendance.textContent = "Submitting...";
+                        });
+
+                        window.addEventListener("beforeunload", stopCamera);
+                    })();
+                </script>
+
+            {% endif %}
+
+        </div>
+    </div>
+</div>
 {% endblock %}

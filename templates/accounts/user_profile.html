@@ -1,25 +1,432 @@
 {% extends "base.html" %}
 
-{% block title %}User Profile{% endblock %}
+{% block title %}My Profile | Student Facial Attendance System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-page {
+        max-width: 950px;
+        margin: 0 auto;
+        padding: 20px 0 45px;
+    }
+
+    .profile-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 32px;
+        margin-bottom: 25px;
+        border-radius: 22px;
+        color: #ffffff;
+        background: linear-gradient(135deg, #115e59, #0f766e, #14b8a6);
+        box-shadow: 0 12px 30px rgba(15, 118, 110, 0.16);
+    }
+
+    .profile-hero::after {
+        content: "";
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        top: -85px;
+        right: -50px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.09);
+    }
+
+    .profile-hero h2 {
+        position: relative;
+        z-index: 1;
+        margin: 0 0 10px;
+        font-size: 30px;
+        font-weight: 750;
+        letter-spacing: -0.5px;
+    }
+
+    .profile-hero p {
+        position: relative;
+        z-index: 1;
+        max-width: 600px;
+        margin: 0;
+        color: #d9fffa;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .profile-card {
+        overflow: hidden;
+        border: 1px solid #e2eeee;
+        border-radius: 20px;
+        background: #ffffff;
+        box-shadow: 0 8px 28px rgba(15, 76, 75, 0.07);
+    }
+
+    .profile-card-header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 28px;
+        border-bottom: 1px solid #e8f0f0;
+        background: #f8fbfb;
+    }
+
+    .profile-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 76px;
+        height: 76px;
+        border: 3px solid #ccfbf1;
+        border-radius: 22px;
+        color: #0f766e;
+        background: linear-gradient(135deg, #ccfbf1, #dbeafe);
+        font-size: 32px;
+        font-weight: 800;
+    }
+
+    .profile-heading {
+        min-width: 0;
+    }
+
+    .profile-heading h3 {
+        overflow-wrap: anywhere;
+        margin: 0 0 7px;
+        color: #134e4a;
+        font-size: 23px;
+        font-weight: 750;
+    }
+
+    .profile-heading p {
+        overflow-wrap: anywhere;
+        margin: 0;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .profile-role {
+        display: inline-block;
+        margin-top: 12px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        color: #0f766e;
+        background: #ccfbf1;
+        font-size: 12px;
+        font-weight: 750;
+    }
+
+    .profile-content {
+        padding: 28px;
+    }
+
+    .profile-section-title {
+        margin: 0 0 20px;
+        color: #134e4a;
+        font-size: 18px;
+        font-weight: 750;
+    }
+
+    .profile-details {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .profile-detail {
+        min-width: 0;
+        padding: 18px;
+        border: 1px solid #e5eeee;
+        border-radius: 13px;
+        background: #ffffff;
+        transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .profile-detail:hover {
+        border-color: #99f6e4;
+        background: #f8fffe;
+    }
+
+    .profile-detail-label {
+        display: block;
+        margin-bottom: 9px;
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 650;
+    }
+
+    .profile-detail-value {
+        display: block;
+        overflow-wrap: anywhere;
+        color: #1e293b;
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.6;
+    }
+
+    .profile-status {
+        display: inline-block;
+        padding: 6px 11px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 750;
+    }
+
+    .profile-status.approved {
+        color: #166534;
+        background: #dcfce7;
+    }
+
+    .profile-status.pending {
+        color: #92400e;
+        background: #fef3c7;
+    }
+
+    .profile-face-section {
+        padding: 22px;
+        margin-top: 25px;
+        border: 1px solid #dbeafe;
+        border-radius: 15px;
+        background: #f8fbff;
+    }
+
+    .profile-face-section h3 {
+        margin: 0 0 8px;
+        color: #134e4a;
+        font-size: 17px;
+        font-weight: 750;
+    }
+
+    .profile-face-description {
+        margin: 0 0 18px;
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .profile-face-image {
+        display: block;
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border: 4px solid #ccfbf1;
+        border-radius: 17px;
+        background: #e2e8f0;
+        box-shadow: 0 5px 16px rgba(15, 118, 110, 0.1);
+    }
+
+    .profile-face-filename {
+        overflow-wrap: anywhere;
+        margin: 12px 0 0;
+        color: #475569;
+        font-size: 12px;
+    }
+
+    .profile-footer {
+        padding: 17px 28px;
+        border-top: 1px solid #e8f0f0;
+        color: #64748b;
+        background: #f8fbfb;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    @media (max-width: 600px) {
+        .profile-page {
+            padding-top: 10px;
+        }
+
+        .profile-hero {
+            padding: 25px 20px;
+        }
+
+        .profile-hero h2 {
+            font-size: 25px;
+        }
+
+        .profile-card-header {
+            align-items: flex-start;
+            gap: 15px;
+            padding: 22px 20px;
+        }
+
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 17px;
+            font-size: 25px;
+        }
+
+        .profile-heading h3 {
+            font-size: 19px;
+        }
+
+        .profile-content {
+            padding: 22px 18px;
+        }
+
+        .profile-details {
+            grid-template-columns: 1fr;
+            gap: 13px;
+        }
+
+        .profile-detail {
+            padding: 15px;
+        }
+
+        .profile-face-section {
+            padding: 18px;
+        }
+
+        .profile-footer {
+            padding: 15px 20px;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="profile-page">
 
-<h2>User Profile</h2>
+    <section class="profile-hero">
+        <h2>My Profile</h2>
+        <p>
+            View your personal information, account role, and registration
+            approval status in your Student Facial Attendance System.
+        </p>
+    </section>
 
-<p>Username: {{ user.username }}</p>
+    <section class="profile-card">
 
-<p>First Name: {{ user.first_name }}</p>
+        <div class="profile-card-header">
 
-<p>Last Name: {{ user.last_name }}</p>
+            <div class="profile-avatar" aria-hidden="true">
+                {{ user.username|first|upper }}
+            </div>
 
-<p>Email: {{ user.email }}</p>
+            <div class="profile-heading">
+                <h3>{{ user.username }}</h3>
+                <p>
+                    {% if user.first_name or user.last_name %}
+                        {{ user.first_name }} {{ user.last_name }}
+                    {% else %}
+                        Name not provided
+                    {% endif %}
+                </p>
 
-<p>Role: {{ user.get_role_display }}</p>
+                <span class="profile-role">
+                    {{ user.get_role_display }}
+                </span>
+            </div>
 
-<p>Approved: {{ user.is_approved }}</p>
+        </div>
 
-{% if user.role == "STUDENT" %}
-    <p>Face image: {{ user.face_image }}</p>
-{% endif %}
+        <div class="profile-content">
 
+            <h3 class="profile-section-title">
+                Personal Information
+            </h3>
+
+            <div class="profile-details">
+
+                <div class="profile-detail">
+                    <span class="profile-detail-label">
+                        Username
+                    </span>
+                    <span class="profile-detail-value">
+                        {{ user.username }}
+                    </span>
+                </div>
+
+                <div class="profile-detail">
+                    <span class="profile-detail-label">
+                        First Name
+                    </span>
+                    <span class="profile-detail-value">
+                        {{ user.first_name|default:"Not provided" }}
+                    </span>
+                </div>
+
+                <div class="profile-detail">
+                    <span class="profile-detail-label">
+                        Last Name
+                    </span>
+                    <span class="profile-detail-value">
+                        {{ user.last_name|default:"Not provided" }}
+                    </span>
+                </div>
+
+                <div class="profile-detail">
+                    <span class="profile-detail-label">
+                        Email Address
+                    </span>
+                    <span class="profile-detail-value">
+                        {{ user.email|default:"Not provided" }}
+                    </span>
+                </div>
+
+                <div class="profile-detail">
+                    <span class="profile-detail-label">
+                        Account Role
+                    </span>
+                    <span class="profile-detail-value">
+                        {{ user.get_role_display }}
+                    </span>
+                </div>
+
+                <div class="profile-detail">
+                    <span class="profile-detail-label">
+                        Registration Approval
+                    </span>
+                    <span class="profile-detail-value">
+                        {% if user.is_approved %}
+                            <span class="profile-status approved">
+                                ✓ Approved
+                            </span>
+                        {% else %}
+                            <span class="profile-status pending">
+                                ◷ Pending Approval
+                            </span>
+                        {% endif %}
+                    </span>
+                </div>
+
+            </div>
+
+            {% if user.role == "STUDENT" %}
+                <section class="profile-face-section">
+
+                    <h3>Registered Face Image</h3>
+
+                    <p class="profile-face-description">
+                        This is the face image associated with your student
+                        account for attendance verification.
+                    </p>
+
+                    {% if user.face_image %}
+                        <img
+                            src="{{ user.face_image.url }}"
+                            alt="Registered face image for {{ user.username }}"
+                            class="profile-face-image"
+                        >
+
+                        <p class="profile-face-filename">
+                            Registered face image: {{ user.face_image }}
+                        </p>
+                    {% else %}
+                        <p class="profile-face-description">
+                            No face image has been registered for your account.
+                        </p>
+                    {% endif %}
+
+                </section>
+            {% endif %}
+
+        </div>
+
+        <div class="profile-footer">
+            Keep your account information accurate. Contact your administrator
+            if you need assistance with your account or approval status.
+        </div>
+
+    </section>
+
+</div>
 {% endblock %}

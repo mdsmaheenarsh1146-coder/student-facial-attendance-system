@@ -1,23 +1,600 @@
 {% extends "base.html" %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Login | Student Facial Attendance System{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* =========================
+       LOGIN PAGE
+    ========================= */
+
+    .login-page {
+        min-height: 75vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 25px 0;
+        background: linear-gradient(135deg, #e9f8f7, #eef4ff, #f7fbff);
+        border-radius: 20px;
+    }
+
+    .login-container {
+        width: 100%;
+        max-width: 1050px;
+        display: grid;
+        grid-template-columns: 1fr 0.9fr;
+        background: #ffffff;
+        border: 1px solid #dcefeb;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(15, 70, 100, 0.15);
+    }
+
+    /* =========================
+       LEFT WELCOME PANEL
+    ========================= */
+
+    .login-welcome {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 45px 38px 30px;
+        color: white;
+        background: linear-gradient(
+            145deg,
+            #063b50,
+            #075b68 60%,
+            #079c87
+        );
+        overflow: hidden;
+    }
+
+    .login-welcome::before {
+        content: "";
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        top: -130px;
+        right: -100px;
+        border-radius: 50%;
+        background: rgba(89, 239, 203, 0.12);
+    }
+
+    .login-welcome::after {
+        content: "";
+        position: absolute;
+        width: 350px;
+        height: 350px;
+        bottom: -230px;
+        left: -100px;
+        border-radius: 50%;
+        background: rgba(64, 190, 255, 0.12);
+    }
+
+    .welcome-content,
+    .welcome-features {
+        position: relative;
+        z-index: 1;
+    }
+
+    .welcome-brand {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 38px;
+    }
+
+    .brand-icon {
+        width: 65px;
+        height: 65px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 34px;
+        border: 2px solid rgba(255, 255, 255, 0.65);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .brand-name {
+        margin: 0;
+        color: #ffffff;
+        font-size: 23px;
+        line-height: 1.4;
+        font-weight: 750;
+    }
+
+    .brand-name span {
+        color: #53edc4;
+    }
+
+    .brand-subtitle {
+        margin-top: 7px;
+        color: #d1e9ed;
+        font-size: 11px;
+        letter-spacing: 1px;
+    }
+
+    .welcome-line {
+        width: 65px;
+        height: 4px;
+        margin: 22px 0;
+        border-radius: 10px;
+        background: #45e4bd;
+    }
+
+    .welcome-heading {
+        margin: 0 0 18px;
+        color: #ffffff;
+        font-size: clamp(28px, 3vw, 40px);
+        font-weight: 800;
+        line-height: 1.2;
+    }
+
+    .welcome-heading span {
+        color: #52eac2;
+    }
+
+    .welcome-description {
+        max-width: 380px;
+        color: #d7e9ee;
+        font-size: 15px;
+        line-height: 1.8;
+    }
+
+    /* Welcome feature cards */
+
+    .welcome-features {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 40px;
+    }
+
+    .welcome-feature {
+        text-align: center;
+        padding: 15px 7px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.07);
+    }
+
+    .feature-icon {
+        font-size: 25px;
+        margin-bottom: 8px;
+    }
+
+    .welcome-feature h4 {
+        margin: 0 0 5px;
+        color: #ffffff;
+        font-size: 12px;
+    }
+
+    .welcome-feature p {
+        margin: 0;
+        color: #c8e3e8;
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    /* =========================
+       RIGHT LOGIN PANEL
+    ========================= */
+
+    .login-form-panel {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 45px clamp(25px, 4vw, 55px);
+        background:
+            radial-gradient(
+                circle at top right,
+                #e5faf4 0,
+                transparent 32%
+            ),
+            #ffffff;
+    }
+
+    .login-form-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .login-logo {
+        width: 75px;
+        height: 75px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 18px;
+        border-radius: 24px;
+        color: #078b78;
+        background: linear-gradient(135deg, #e0faf1, #e9f2ff);
+        font-size: 37px;
+        box-shadow: 0 8px 22px rgba(8, 139, 120, 0.1);
+    }
+
+    .login-form-header h2 {
+        margin: 0 0 9px;
+        color: #10314b;
+        font-size: 32px;
+        font-weight: 800;
+    }
+
+    .login-form-header p {
+        margin: 0;
+        color: #668096;
+        font-size: 14px;
+    }
+
+    .form-divider {
+        width: 55px;
+        height: 4px;
+        margin: 20px auto 0;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #078b78, #48dfb4);
+    }
+
+    /* Login error messages */
+
+    .login-error {
+        padding: 13px 15px;
+        margin-bottom: 20px;
+        color: #a62836;
+        background: #fff0f1;
+        border: 1px solid #ffd2d7;
+        border-radius: 12px;
+        font-size: 14px;
+    }
+
+    .login-error ul {
+        padding-left: 20px;
+    }
+
+    /* =========================
+       LOGIN FORM
+    ========================= */
+
+    .login-form {
+        width: 100%;
+    }
+
+    .login-form p {
+        margin: 0 0 19px;
+    }
+
+    .login-form label {
+        display: block;
+        margin-bottom: 8px;
+        color: #25455e;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .login-form input[type="text"],
+    .login-form input[type="password"],
+    .login-form input[type="email"] {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 49px;
+        padding: 13px 15px;
+        color: #173b50;
+        background: #fbfdff;
+        border: 1px solid #d8e5ed;
+        border-radius: 12px;
+        outline: none;
+        font-size: 14px;
+        transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    .login-form input:focus {
+        background: #ffffff;
+        border-color: #12a88e;
+        box-shadow: 0 0 0 4px rgba(18, 168, 142, 0.12);
+    }
+
+    .login-form .helptext {
+        display: block;
+        margin-top: 6px;
+        color: #668096;
+        font-size: 12px;
+    }
+
+    .login-form .errorlist {
+        margin: 6px 0;
+        padding-left: 18px;
+        color: #c6283d;
+        font-size: 12px;
+    }
+
+    /* Login button */
+
+    .login-button {
+        width: 100%;
+        min-height: 52px;
+        padding: 14px 20px;
+        color: white;
+        background: linear-gradient(110deg, #078b78, #20c69b);
+        border: none;
+        border-radius: 13px;
+        font-size: 16px;
+        font-weight: 750;
+        cursor: pointer;
+        box-shadow: 0 8px 18px rgba(7, 139, 120, 0.2);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .login-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(7, 139, 120, 0.28);
+    }
+
+    .login-button:active {
+        transform: translateY(0);
+    }
+
+    /* Signup link */
+
+    .signup-prompt {
+        margin-top: 25px;
+        padding: 17px 12px;
+        text-align: center;
+        border: 1px solid #e0f1f0;
+        border-radius: 12px;
+        background: #f2fbfa;
+        color: #637b8c;
+        font-size: 13px;
+    }
+
+    .signup-link {
+        margin-left: 5px;
+        color: #078b78;
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    .signup-link:hover {
+        color: #056757;
+        text-decoration: underline;
+    }
+
+    .login-footer {
+        margin-top: 25px;
+        text-align: center;
+        color: #91a3b1;
+        font-size: 11px;
+        line-height: 1.8;
+    }
+
+    /* =========================
+       RESPONSIVE LAYOUT
+    ========================= */
+
+    @media (max-width: 800px) {
+        .login-container {
+            max-width: 520px;
+            grid-template-columns: 1fr;
+        }
+
+        .login-welcome {
+            padding: 30px 25px;
+        }
+
+        .welcome-brand {
+            margin-bottom: 25px;
+        }
+
+        .welcome-heading {
+            font-size: 30px;
+        }
+
+        .welcome-features {
+            margin-top: 25px;
+        }
+
+        .login-form-panel {
+            padding: 38px 25px;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .login-page {
+            padding: 15px 5px;
+        }
+
+        .login-welcome,
+        .login-form-panel {
+            padding: 25px 18px;
+        }
+
+        .brand-name {
+            font-size: 19px;
+        }
+
+        .brand-icon {
+            width: 52px;
+            height: 52px;
+            font-size: 28px;
+        }
+
+        .welcome-features {
+            grid-template-columns: 1fr;
+        }
+
+        .welcome-feature {
+            display: flex;
+            align-items: center;
+            text-align: left;
+            gap: 12px;
+        }
+
+        .feature-icon {
+            flex-shrink: 0;
+            margin: 0;
+        }
+
+        .login-form-header h2 {
+            font-size: 28px;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 
-<h2>Login</h2>
+<div class="login-page">
 
-{% if error %}
-    <p>{{ error }}</p>
-{% endif %}
+    <div class="login-container">
 
-<form method="post">
+        <!-- LEFT WELCOME SECTION -->
 
-    {% csrf_token %}
+        <section class="login-welcome">
 
-    {{ form.as_p }}
+            <div class="welcome-content">
 
-    <button type="submit">Login</button>
+                <div class="welcome-brand">
 
-</form>
+                    <div class="brand-icon" aria-hidden="true">
+                        ◉
+                    </div>
+
+                    <div>
+                        <h1 class="brand-name">
+                            Student Facial<br>
+                            <span>Attendance System</span>
+                        </h1>
+
+                        <div class="brand-subtitle">
+                            SMART &nbsp; • &nbsp; SECURE &nbsp; • &nbsp; FUTURE READY
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="welcome-line"></div>
+
+                <h2 class="welcome-heading">
+                    Face Recognition<br>
+                    for a Smarter<br>
+                    <span>Tomorrow</span>
+                </h2>
+
+                <p class="welcome-description">
+                    A modern attendance system designed to make attendance
+                    quick, easy, and secure through facial verification.
+                </p>
+
+            </div>
+
+            <div class="welcome-features">
+
+                <div class="welcome-feature">
+                    <div class="feature-icon" aria-hidden="true">🛡️</div>
+                    <div>
+                        <h4>Secure</h4>
+                        <p>Protect your data</p>
+                    </div>
+                </div>
+
+                <div class="welcome-feature">
+                    <div class="feature-icon" aria-hidden="true">◎</div>
+                    <div>
+                        <h4>Face Recognition</h4>
+                        <p>Face verification</p>
+                    </div>
+                </div>
+
+                <div class="welcome-feature">
+                    <div class="feature-icon" aria-hidden="true">👥</div>
+                    <div>
+                        <h4>Role Based Access</h4>
+                        <p>Student &amp; Admin</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- RIGHT LOGIN FORM -->
+
+        <section class="login-form-panel">
+
+            <div class="login-form-header">
+
+                <div class="login-logo" aria-hidden="true">
+                    ◎
+                </div>
+
+                <h2>Welcome Back!</h2>
+
+                <p>Login to your account to continue</p>
+
+                <div class="form-divider"></div>
+
+            </div>
+
+            {% if error %}
+                <div class="login-error" role="alert">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            {% if form.non_field_errors %}
+                <div class="login-error" role="alert">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <form method="post" class="login-form">
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <p>
+                        <label for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.help_text %}
+                            <span class="helptext">
+                                {{ field.help_text }}
+                            </span>
+                        {% endif %}
+
+                        {% if field.errors %}
+                            {{ field.errors }}
+                        {% endif %}
+                    </p>
+                {% endfor %}
+
+                <button type="submit" class="login-button">
+                    → &nbsp; Login to Your Account
+                </button>
+
+            </form>
+
+            <div class="signup-prompt">
+                Don't have an account?
+
+                <a href="{% url 'signup' %}" class="signup-link">
+                    Sign Up
+                </a>
+            </div>
+
+            <div class="login-footer">
+                Student Facial Attendance System
+                <br>
+                Secure • Smart • Simple
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
 
 {% endblock %}

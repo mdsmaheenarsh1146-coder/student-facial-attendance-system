@@ -2,12 +2,142 @@
 
 {% block title %}Attendance Submitted{% endblock %}
 
+{% block extra_css %}
+<style>
+    .success-page {
+        min-height: 65vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .success-card {
+        width: 100%;
+        max-width: 560px;
+        background: #ffffff;
+        border-radius: 24px;
+        padding: 45px 35px;
+        text-align: center;
+        box-shadow: 0 12px 35px rgba(15, 118, 110, 0.12);
+        border: 1px solid #e0f2f1;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .success-icon {
+        width: 90px;
+        height: 90px;
+        margin: 0 auto 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ccfbf1, #d1fae5);
+        color: #0f766e;
+        font-size: 44px;
+        font-weight: bold;
+    }
+
+    .success-card h2 {
+        color: #115e59;
+        font-size: 29px;
+        margin: 0 0 15px;
+    }
+
+    .success-message {
+        color: #475569;
+        font-size: 16px;
+        line-height: 1.7;
+        margin-bottom: 25px;
+    }
+
+    .status-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        color: #92400e;
+        padding: 14px 18px;
+        border-radius: 12px;
+        font-weight: 600;
+        margin: 0 auto 25px;
+    }
+
+    .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #f59e0b;
+        flex-shrink: 0;
+    }
+
+    .success-note {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .success-page {
+            padding: 25px 12px;
+        }
+
+        .success-card {
+            padding: 35px 22px;
+            border-radius: 18px;
+        }
+
+        .success-card h2 {
+            font-size: 24px;
+        }
+
+        .success-icon {
+            width: 75px;
+            height: 75px;
+            font-size: 36px;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="success-page">
+    <div class="success-card">
 
-<h2>Attendance Submitted</h2>
+        <div class="success-icon" aria-hidden="true">
+            ✓
+        </div>
 
-<p>Your attendance has been submitted.</p>
+        <h2>Attendance Submitted!</h2>
 
-<p>Status: Pending approval</p>
+        <p class="success-message">
+            Your attendance has been submitted successfully.
+        </p>
 
+        <div class="status-box">
+            <span class="status-dot"></span>
+            <span>Status: Pending approval</span>
+        </div>
+
+        <p class="success-note">
+            Your attendance is awaiting review by an administrator.
+            Please check your attendance history later for updates.
+        </p>
+
+    </div>
+</div>
 {% endblock %}

@@ -1,60 +1,405 @@
 {% extends "base.html" %}
 
-{% block title %}Edit User{% endblock %}
+{% block title %}Edit User | Student Facial Attendance System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .edit-user-page {
+        max-width: 850px;
+        margin: 0 auto;
+        padding: 20px 0 45px;
+    }
+
+    .edit-user-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 30px;
+        margin-bottom: 25px;
+        border-radius: 20px;
+        color: #ffffff;
+        background: linear-gradient(135deg, #115e59, #0f766e, #14b8a6);
+        box-shadow: 0 12px 28px rgba(15, 118, 110, 0.15);
+    }
+
+    .edit-user-hero::after {
+        content: "";
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        top: -75px;
+        right: -40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.09);
+    }
+
+    .edit-user-hero h2 {
+        position: relative;
+        z-index: 1;
+        margin: 0 0 9px;
+        font-size: 29px;
+        font-weight: 750;
+        letter-spacing: -0.5px;
+    }
+
+    .edit-user-hero p {
+        position: relative;
+        z-index: 1;
+        margin: 0;
+        color: #d9fffa;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .edit-user-card {
+        overflow: hidden;
+        border: 1px solid #e2eeee;
+        border-radius: 20px;
+        background: #ffffff;
+        box-shadow: 0 8px 28px rgba(15, 76, 75, 0.07);
+    }
+
+    .edit-user-card-header {
+        padding: 23px 28px;
+        border-bottom: 1px solid #e8f0f0;
+        background: #f8fbfb;
+    }
+
+    .edit-user-card-header h3 {
+        margin: 0 0 6px;
+        color: #134e4a;
+        font-size: 19px;
+        font-weight: 750;
+    }
+
+    .edit-user-card-header p {
+        margin: 0;
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .edit-user-form {
+        padding: 28px;
+    }
+
+    .edit-user-message-list {
+        display: grid;
+        gap: 10px;
+        margin-bottom: 22px;
+    }
+
+    .edit-user-message {
+        padding: 13px 15px;
+        border: 1px solid #99f6e4;
+        border-radius: 10px;
+        color: #115e59;
+        background: #f0fdfa;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .edit-user-fields {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+    .edit-user-field {
+        min-width: 0;
+    }
+
+    .edit-user-field.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .edit-user-field label {
+        display: block;
+        margin-bottom: 9px;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .edit-user-field input {
+        display: block;
+        width: 100%;
+        min-height: 47px;
+        box-sizing: border-box;
+        padding: 12px 14px;
+        border: 1px solid #d5e3e3;
+        border-radius: 11px;
+        outline: none;
+        color: #1e293b;
+        background: #ffffff;
+        font-family: inherit;
+        font-size: 14px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .edit-user-field input:focus {
+        border-color: #0f9b8e;
+        box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.12);
+    }
+
+    .edit-user-field input::placeholder {
+        color: #94a3b8;
+    }
+
+    .edit-user-field small {
+        display: block;
+        margin-top: 8px;
+        color: #64748b;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .password-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 13px 15px;
+        margin-top: 12px;
+        border: 1px solid #bfdbfe;
+        border-radius: 11px;
+        color: #1e40af;
+        background: #eff6ff;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .password-note strong {
+        display: block;
+        margin-bottom: 2px;
+        font-size: 13px;
+    }
+
+    .edit-user-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding-top: 24px;
+        margin-top: 28px;
+        border-top: 1px solid #e8f0f0;
+    }
+
+    .edit-user-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 45px;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 11px;
+        text-decoration: none;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .edit-user-button:hover {
+        transform: translateY(-2px);
+    }
+
+    .save-button {
+        color: #ffffff;
+        background: #0f766e;
+    }
+
+    .save-button:hover {
+        color: #ffffff;
+        background: #115e59;
+    }
+
+    .cancel-button {
+        border: 1px solid #d5e3e3;
+        color: #475569;
+        background: #ffffff;
+    }
+
+    .cancel-button:hover {
+        color: #134e4a;
+        background: #f0fdfa;
+    }
+
+    .edit-user-footer {
+        padding: 16px 28px;
+        border-top: 1px solid #e8f0f0;
+        color: #64748b;
+        background: #f8fbfb;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    @media (max-width: 600px) {
+        .edit-user-page {
+            padding-top: 10px;
+        }
+
+        .edit-user-hero {
+            padding: 24px 20px;
+        }
+
+        .edit-user-hero h2 {
+            font-size: 25px;
+        }
+
+        .edit-user-card-header,
+        .edit-user-form {
+            padding: 21px;
+        }
+
+        .edit-user-fields {
+            grid-template-columns: 1fr;
+            gap: 19px;
+        }
+
+        .edit-user-field.full-width {
+            grid-column: auto;
+        }
+
+        .edit-user-actions {
+            flex-direction: column;
+        }
+
+        .edit-user-button {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .edit-user-footer {
+            padding: 15px 21px;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="edit-user-page">
 
-<h2>Edit User</h2>
+    <section class="edit-user-hero">
+        <h2>Edit User</h2>
+        <p>
+            Update account information and manage user details.
+            Review your changes before saving.
+        </p>
+    </section>
 
-{% if messages %}
-    {% for message in messages %}
-        <p>{{ message }}</p>
-    {% endfor %}
-{% endif %}
+    <section class="edit-user-card">
 
-<form method="post">
-    {% csrf_token %}
+        <div class="edit-user-card-header">
+            <h3>Account Information</h3>
+            <p>Update the fields below and save your changes.</p>
+        </div>
 
-    <p>
-        <label>Username:</label><br>
-        <input type="text"
-               name="username"
-               value="{{ edit_user.username }}"
-               required>
-    </p>
+        <form method="post" class="edit-user-form">
+            {% csrf_token %}
 
-    <p>
-        <label>First Name:</label><br>
-        <input type="text"
-               name="first_name"
-               value="{{ edit_user.first_name }}">
-    </p>
+            {% if messages %}
+                <div class="edit-user-message-list">
+                    {% for message in messages %}
+                        <div class="edit-user-message">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
 
-    <p>
-        <label>Last Name:</label><br>
-        <input type="text"
-               name="last_name"
-               value="{{ edit_user.last_name }}">
-    </p>
+            <div class="edit-user-fields">
 
-    <p>
-        <label>Email:</label><br>
-        <input type="email"
-               name="email"
-               value="{{ edit_user.email }}"
-               required>
-    </p>
+                <div class="edit-user-field full-width">
+                    <label for="username">Username</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value="{{ edit_user.username }}"
+                        maxlength="150"
+                        autocomplete="username"
+                        required
+                    >
+                    <small>Your username is used to identify your account.</small>
+                </div>
 
-    <p>
-        <label>New Password:</label><br>
-        <input type="password"
-               name="password"
-               placeholder="Leave blank to keep current password">
-    </p>
+                <div class="edit-user-field">
+                    <label for="first_name">First Name</label>
+                    <input
+                        type="text"
+                        id="first_name"
+                        name="first_name"
+                        value="{{ edit_user.first_name }}"
+                        autocomplete="given-name"
+                    >
+                </div>
 
-    <button type="submit">Save Changes</button>
+                <div class="edit-user-field">
+                    <label for="last_name">Last Name</label>
+                    <input
+                        type="text"
+                        id="last_name"
+                        name="last_name"
+                        value="{{ edit_user.last_name }}"
+                        autocomplete="family-name"
+                    >
+                </div>
 
-    <a href="{% url 'all_users' %}">Cancel</a>
-</form>
+                <div class="edit-user-field full-width">
+                    <label for="email">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{{ edit_user.email }}"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
 
+                <div class="edit-user-field full-width">
+                    <label for="password">New Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Leave blank to keep current password"
+                        autocomplete="new-password"
+                    >
+
+                    <div class="password-note">
+                        <span aria-hidden="true">ⓘ</span>
+                        <div>
+                            <strong>Password information</strong>
+                            Leave this field empty if you do not want to change
+                            the current password. Enter a new password only
+                            when you want to update it.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="edit-user-actions">
+                <button type="submit" class="edit-user-button save-button">
+                    ✓ Save Changes
+                </button>
+
+                <a
+                    href="{% url 'all_users' %}"
+                    class="edit-user-button cancel-button"
+                >
+                    ← Cancel
+                </a>
+            </div>
+
+        </form>
+
+        <div class="edit-user-footer">
+            Make sure the information is correct before saving your changes.
+        </div>
+
+    </section>
+
+</div>
 {% endblock %}

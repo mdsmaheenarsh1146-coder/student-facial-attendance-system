@@ -1,41 +1,434 @@
 {% extends "base.html" %}
 
-{% block title %}My Attendance{% endblock %}
+{% block title %}My Attendance | Student Facial Attendance System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .history-page {
+        max-width: 1050px;
+        margin: 0 auto;
+        padding: 20px 0 45px;
+    }
+
+    /* Page header */
+    .history-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 32px;
+        margin-bottom: 25px;
+        border-radius: 22px;
+        color: #ffffff;
+        background: linear-gradient(135deg, #115e59, #0f766e, #14b8a6);
+        box-shadow: 0 12px 30px rgba(15, 118, 110, 0.16);
+    }
+
+    .history-hero::after {
+        content: "";
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        top: -80px;
+        right: -45px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.09);
+    }
+
+    .history-hero h2 {
+        position: relative;
+        z-index: 1;
+        margin: 0 0 10px;
+        font-size: 30px;
+        font-weight: 750;
+        letter-spacing: -0.5px;
+    }
+
+    .history-hero p {
+        position: relative;
+        z-index: 1;
+        max-width: 650px;
+        margin: 0;
+        color: #d9fffa;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    /* Summary cards */
+    .history-summary {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 28px;
+    }
+
+    .history-stat {
+        padding: 21px;
+        border: 1px solid #e2eeee;
+        border-radius: 16px;
+        background: #ffffff;
+        box-shadow: 0 6px 22px rgba(15, 76, 75, 0.05);
+    }
+
+    .history-stat-label {
+        display: block;
+        margin-bottom: 9px;
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .history-stat-value {
+        display: block;
+        color: #134e4a;
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+    .history-stat.total {
+        border-top: 4px solid #0f766e;
+    }
+
+    .history-stat.approved {
+        border-top: 4px solid #22c55e;
+    }
+
+    .history-stat.pending {
+        border-top: 4px solid #f59e0b;
+    }
+
+    /* Table container */
+    .history-card {
+        overflow: hidden;
+        border: 1px solid #e2eeee;
+        border-radius: 19px;
+        background: #ffffff;
+        box-shadow: 0 8px 28px rgba(15, 76, 75, 0.06);
+    }
+
+    .history-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 23px 26px;
+        border-bottom: 1px solid #e8f0f0;
+        background: #f8fbfb;
+    }
+
+    .history-card-header h3 {
+        margin: 0 0 5px;
+        color: #134e4a;
+        font-size: 19px;
+        font-weight: 750;
+    }
+
+    .history-card-header p {
+        margin: 0;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .history-label {
+        padding: 7px 12px;
+        border-radius: 20px;
+        color: #0f766e;
+        background: #ccfbf1;
+        font-size: 12px;
+        font-weight: 750;
+    }
+
+    .history-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    .history-table th {
+        padding: 16px 25px;
+        border-bottom: 1px solid #e2eeee;
+        color: #64748b;
+        background: #ffffff;
+        font-size: 12px;
+        font-weight: 750;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .history-table td {
+        padding: 19px 25px;
+        border-bottom: 1px solid #edf3f3;
+        color: #334155;
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+    .history-table tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .history-table tbody tr:hover {
+        background: #f8fffe;
+    }
+
+    .history-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .date-cell {
+        color: #134e4a;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    /* Status badges */
+    .history-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 750;
+        white-space: nowrap;
+    }
+
+    .history-status.approved {
+        color: #166534;
+        background: #dcfce7;
+    }
+
+    .history-status.pending {
+        color: #92400e;
+        background: #fef3c7;
+    }
+
+    .history-status.rejected {
+        color: #991b1b;
+        background: #fee2e2;
+    }
+
+    .history-status.other {
+        color: #475569;
+        background: #e2e8f0;
+    }
+
+    .status-dot {
+        width: 7px;
+        height: 7px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    /* Empty state */
+    .history-empty {
+        padding: 55px 24px;
+        text-align: center;
+    }
+
+    .history-empty-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 68px;
+        height: 68px;
+        margin: 0 auto 18px;
+        border-radius: 21px;
+        color: #0f766e;
+        background: #ccfbf1;
+        font-size: 29px;
+    }
+
+    .history-empty h3 {
+        margin: 0 0 9px;
+        color: #134e4a;
+        font-size: 20px;
+        font-weight: 750;
+    }
+
+    .history-empty p {
+        max-width: 420px;
+        margin: 0 auto;
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .history-footer {
+        padding: 16px 25px;
+        border-top: 1px solid #e8f0f0;
+        color: #64748b;
+        background: #f8fbfb;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    @media (max-width: 700px) {
+        .history-page {
+            padding-top: 10px;
+        }
+
+        .history-hero {
+            padding: 25px 20px;
+        }
+
+        .history-hero h2 {
+            font-size: 25px;
+        }
+
+        .history-summary {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .history-stat {
+            padding: 17px 19px;
+        }
+
+        .history-card-header {
+            padding: 20px;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 15px 18px;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="history-page">
 
-<h2>My Attendance</h2>
+    <!-- Page header -->
+    <section class="history-hero">
+        <h2>My Attendance</h2>
+        <p>
+            View your attendance records and check whether each submission
+            has been approved, is awaiting review, or has been rejected.
+        </p>
+    </section>
 
-{% if records %}
+    {% if records %}
 
-    <table border="1">
+        <!-- Summary statistics -->
+        <section class="history-summary">
 
-        <tr>
+            <div class="history-stat total">
+                <span class="history-stat-label">Total Records</span>
+                <span class="history-stat-value">
+                    {{ records|length }}
+                </span>
+            </div>
 
-            <th>Date</th>
+            <div class="history-stat approved">
+                <span class="history-stat-label">Approved</span>
+                <span class="history-stat-value">
+                    {{ records|length }}
+                </span>
+            </div>
 
-            <th>Status</th>
+            <div class="history-stat pending">
+                <span class="history-stat-label">Attendance History</span>
+                <span class="history-stat-value">
+                    {{ records|length }}
+                </span>
+            </div>
 
-        </tr>
+        </section>
 
-        {% for record in records %}
+        <!-- Attendance table -->
+        <section class="history-card">
 
-            <tr>
+            <div class="history-card-header">
+                <div>
+                    <h3>Attendance Records</h3>
+                    <p>Review the date and status of each submission.</p>
+                </div>
 
-                <td>{{ record.attendance_date }}</td>
+                <span class="history-label">My Records</span>
+            </div>
 
-                <td>{{ record.get_status_display }}</td>
+            <div class="history-table-wrapper">
+                <table class="history-table">
 
-            </tr>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
 
-        {% endfor %}
+                    <tbody>
+                        {% for record in records %}
+                            <tr>
+                                <td class="date-cell">
+                                    {{ record.attendance_date }}
+                                </td>
 
-    </table>
+                                <td>
+                                    {% if record.status == "APPROVED" %}
+                                        <span class="history-status approved">
+                                            <span class="status-dot"></span>
+                                            {{ record.get_status_display }}
+                                        </span>
+                                    {% elif record.status == "PENDING" %}
+                                        <span class="history-status pending">
+                                            <span class="status-dot"></span>
+                                            {{ record.get_status_display }}
+                                        </span>
+                                    {% elif record.status == "REJECTED" %}
+                                        <span class="history-status rejected">
+                                            <span class="status-dot"></span>
+                                            {{ record.get_status_display }}
+                                        </span>
+                                    {% else %}
+                                        <span class="history-status other">
+                                            <span class="status-dot"></span>
+                                            {{ record.get_status_display }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
 
-{% else %}
+                </table>
+            </div>
 
-    <p>No attendance records found.</p>
+            <div class="history-footer">
+                Attendance statuses reflect the current status of each record.
+            </div>
 
-{% endif %}
+        </section>
 
+    {% else %}
+
+        <!-- Empty state -->
+        <section class="history-card">
+            <div class="history-empty">
+
+                <div class="history-empty-icon" aria-hidden="true">
+                    ▤
+                </div>
+
+                <h3>No Attendance Records Yet</h3>
+
+                <p>
+                    Your attendance history will appear here after you submit
+                    an attendance request.
+                </p>
+
+            </div>
+        </section>
+
+    {% endif %}
+
+</div>
 {% endblock %}

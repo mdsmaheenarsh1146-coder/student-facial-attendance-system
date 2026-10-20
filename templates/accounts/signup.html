@@ -1,19 +1,556 @@
 {% extends "base.html" %}
 
-{% block title %}Student Signup{% endblock %}
+{% block title %}Student Signup | Student Facial Attendance System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .signup-page {
+        min-height: 80vh;
+        padding: 35px 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #e9f8f7, #eef4ff, #f7fbff);
+        border-radius: 20px;
+    }
+
+    .signup-container {
+        width: 100%;
+        max-width: 1050px;
+        display: grid;
+        grid-template-columns: 0.85fr 1.15fr;
+        overflow: hidden;
+        background: #ffffff;
+        border: 1px solid #dcefeb;
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(15, 70, 100, 0.15);
+    }
+
+    /* Welcome panel */
+
+    .signup-welcome {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 42px 32px;
+        overflow: hidden;
+        color: #ffffff;
+        background: linear-gradient(145deg, #063b50, #075b68 60%, #079c87);
+    }
+
+    .signup-welcome::before {
+        content: "";
+        position: absolute;
+        top: -100px;
+        right: -110px;
+        width: 280px;
+        height: 280px;
+        border-radius: 50%;
+        background: rgba(89, 239, 203, 0.12);
+    }
+
+    .signup-welcome::after {
+        content: "";
+        position: absolute;
+        bottom: -150px;
+        left: -100px;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: rgba(64, 190, 255, 0.12);
+    }
+
+    .signup-welcome-content,
+    .signup-welcome-footer {
+        position: relative;
+        z-index: 1;
+    }
+
+    .signup-brand {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        margin-bottom: 50px;
+    }
+
+    .signup-brand-icon {
+        width: 58px;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 17px;
+        background: rgba(255, 255, 255, 0.09);
+        font-size: 30px;
+    }
+
+    .signup-brand h1 {
+        margin: 0;
+        font-size: 20px;
+        line-height: 1.4;
+        font-weight: 800;
+    }
+
+    .signup-brand h1 span {
+        color: #53edc4;
+    }
+
+    .signup-brand small {
+        display: block;
+        margin-top: 5px;
+        color: #d1e9ed;
+        font-size: 11px;
+        letter-spacing: 1px;
+    }
+
+    .signup-line {
+        width: 58px;
+        height: 4px;
+        margin-bottom: 24px;
+        border-radius: 10px;
+        background: #45e4bd;
+    }
+
+    .signup-welcome h2 {
+        margin: 0 0 18px;
+        font-size: clamp(27px, 3vw, 37px);
+        line-height: 1.25;
+        font-weight: 800;
+    }
+
+    .signup-welcome h2 span {
+        color: #52eac2;
+    }
+
+    .signup-welcome-description {
+        color: #d7e9ee;
+        font-size: 14px;
+        line-height: 1.9;
+    }
+
+    .signup-benefits {
+        display: grid;
+        gap: 18px;
+        margin-top: 35px;
+    }
+
+    .signup-benefit {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+    }
+
+    .signup-benefit-icon {
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 13px;
+        background: rgba(255, 255, 255, 0.09);
+        font-size: 20px;
+    }
+
+    .signup-benefit h3 {
+        margin: 0 0 4px;
+        font-size: 13px;
+        color: #ffffff;
+    }
+
+    .signup-benefit p {
+        margin: 0;
+        color: #c8e3e8;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .signup-welcome-footer {
+        margin-top: 40px;
+        color: #c8e3e8;
+        font-size: 11px;
+    }
+
+    /* Signup form */
+
+    .signup-form-panel {
+        padding: 42px clamp(24px, 4vw, 50px);
+        background:
+            radial-gradient(circle at top right, #e5faf4 0, transparent 30%),
+            #ffffff;
+    }
+
+    .signup-header {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .signup-logo {
+        width: 68px;
+        height: 68px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        border-radius: 22px;
+        color: #078b78;
+        background: linear-gradient(135deg, #e0faf1, #e9f2ff);
+        box-shadow: 0 8px 22px rgba(8, 139, 120, 0.1);
+        font-size: 34px;
+    }
+
+    .signup-header h2 {
+        margin: 0 0 9px;
+        color: #10314b;
+        font-size: 30px;
+        font-weight: 800;
+    }
+
+    .signup-header p {
+        margin: 0;
+        color: #668096;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .signup-divider {
+        width: 55px;
+        height: 4px;
+        margin: 19px auto 0;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #078b78, #48dfb4);
+    }
+
+    .signup-errors {
+        margin-bottom: 20px;
+        padding: 14px 16px;
+        border: 1px solid #ffd2d7;
+        border-radius: 12px;
+        background: #fff0f1;
+        color: #a62836;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .signup-errors ul {
+        margin: 5px 0 0;
+        padding-left: 20px;
+    }
+
+    .signup-form p {
+        margin: 0 0 19px;
+    }
+
+    .signup-form label {
+        display: block;
+        margin-bottom: 8px;
+        color: #25455e;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .signup-form input:not([type="checkbox"]):not([type="radio"]),
+    .signup-form select,
+    .signup-form textarea {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 48px;
+        padding: 12px 14px;
+        color: #173b50;
+        background: #fbfdff;
+        border: 1px solid #d8e5ed;
+        border-radius: 11px;
+        outline: none;
+        font: inherit;
+        font-size: 14px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .signup-form input[type="file"] {
+        min-height: auto !important;
+        padding: 12px !important;
+        background: #f3fbf9 !important;
+        border: 1px dashed #9bcfc4 !important;
+        cursor: pointer;
+    }
+
+    .signup-form input:focus,
+    .signup-form select:focus,
+    .signup-form textarea:focus {
+        border-color: #12a88e;
+        box-shadow: 0 0 0 4px rgba(18, 168, 142, 0.12);
+    }
+
+    .signup-form .helptext {
+        display: block;
+        margin-top: 6px;
+        color: #8094a3;
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+    .signup-form .errorlist {
+        margin: 6px 0 0;
+        padding-left: 18px;
+        color: #c6283d;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .signup-submit {
+        width: 100%;
+        min-height: 52px;
+        margin-top: 8px;
+        padding: 14px 20px;
+        color: #ffffff;
+        background: linear-gradient(110deg, #078b78, #20c69b);
+        border: none;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 750;
+        cursor: pointer;
+        box-shadow: 0 8px 18px rgba(7, 139, 120, 0.2);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .signup-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(7, 139, 120, 0.28);
+    }
+
+    .signup-login-prompt {
+        margin-top: 23px;
+        padding: 16px 12px;
+        text-align: center;
+        border: 1px solid #e0f1f0;
+        border-radius: 12px;
+        background: #f2fbfa;
+        color: #637b8c;
+        font-size: 13px;
+    }
+
+    .signup-login-prompt a {
+        margin-left: 5px;
+        color: #078b78;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .signup-login-prompt a:hover {
+        color: #056757;
+        text-decoration: underline;
+    }
+
+    .signup-security-note {
+        margin-top: 20px;
+        text-align: center;
+        color: #91a3b1;
+        font-size: 11px;
+        line-height: 1.7;
+    }
+
+    @media (max-width: 800px) {
+        .signup-container {
+            max-width: 560px;
+            grid-template-columns: 1fr;
+        }
+
+        .signup-welcome {
+            padding: 30px 25px;
+        }
+
+        .signup-brand {
+            margin-bottom: 30px;
+        }
+
+        .signup-welcome h2 {
+            font-size: 30px;
+        }
+
+        .signup-benefits {
+            margin-top: 25px;
+        }
+
+        .signup-welcome-footer {
+            margin-top: 25px;
+        }
+
+        .signup-form-panel {
+            padding: 35px 25px;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .signup-page {
+            padding: 15px 5px;
+        }
+
+        .signup-welcome,
+        .signup-form-panel {
+            padding: 25px 18px;
+        }
+
+        .signup-brand h1 {
+            font-size: 17px;
+        }
+
+        .signup-brand-icon {
+            width: 49px;
+            height: 49px;
+            font-size: 25px;
+        }
+
+        .signup-header h2 {
+            font-size: 26px;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 
-<h2>Student Signup</h2>
+<div class="signup-page">
+    <div class="signup-container">
 
-<form method="post" enctype="multipart/form-data">
+        <!-- Welcome panel -->
+        <section class="signup-welcome">
 
-    {% csrf_token %}
+            <div class="signup-welcome-content">
 
-    {{ form.as_p }}
+                <div class="signup-brand">
+                    <div class="signup-brand-icon" aria-hidden="true">◉</div>
 
-    <button type="submit">Sign Up</button>
+                    <div>
+                        <h1>
+                            Student Facial<br>
+                            <span>Attendance System</span>
+                        </h1>
 
-</form>
+                        <small>SMART • SECURE • FUTURE READY</small>
+                    </div>
+                </div>
+
+                <div class="signup-line"></div>
+
+                <h2>
+                    Start Your<br>
+                    Journey Toward<br>
+                    <span>Smarter Attendance</span>
+                </h2>
+
+                <p class="signup-welcome-description">
+                    Create your student account to access a modern,
+                    face-verification-based attendance experience.
+                </p>
+
+                <div class="signup-benefits">
+
+                    <div class="signup-benefit">
+                        <div class="signup-benefit-icon" aria-hidden="true">🛡️</div>
+                        <div>
+                            <h3>Secure Registration</h3>
+                            <p>Your account is managed through an approval process.</p>
+                        </div>
+                    </div>
+
+                    <div class="signup-benefit">
+                        <div class="signup-benefit-icon" aria-hidden="true">◎</div>
+                        <div>
+                            <h3>Face Verification</h3>
+                            <p>Register a face image for attendance verification.</p>
+                        </div>
+                    </div>
+
+                    <div class="signup-benefit">
+                        <div class="signup-benefit-icon" aria-hidden="true">✓</div>
+                        <div>
+                            <h3>Easy Attendance</h3>
+                            <p>Submit attendance and track its approval status.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="signup-welcome-footer">
+                Student Facial Attendance System
+            </div>
+
+        </section>
+
+        <!-- Signup form panel -->
+        <section class="signup-form-panel">
+
+            <div class="signup-header">
+                <div class="signup-logo" aria-hidden="true">♙</div>
+
+                <h2>Create Account</h2>
+
+                <p>Fill in your details to register as a student</p>
+
+                <div class="signup-divider"></div>
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="signup-errors" role="alert">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <form method="post"
+                  enctype="multipart/form-data"
+                  class="signup-form">
+
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <p>
+                        <label for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                            {% if field.field.required %}
+                                <span style="color:#078b78;">*</span>
+                            {% endif %}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.help_text %}
+                            <span class="helptext">
+                                {{ field.help_text|safe }}
+                            </span>
+                        {% endif %}
+
+                        {% if field.errors %}
+                            {{ field.errors }}
+                        {% endif %}
+                    </p>
+                {% endfor %}
+
+                <button type="submit" class="signup-submit">
+                    Create Student Account &nbsp; →
+                </button>
+
+            </form>
+
+            <div class="signup-login-prompt">
+                Already have an account?
+                <a href="{% url 'login' %}">Login</a>
+            </div>
+
+            <div class="signup-security-note">
+                Your registration will be subject to account approval.
+                <br>
+                Secure • Smart • Simple
+            </div>
+
+        </section>
+
+    </div>
+</div>
 
 {% endblock %}

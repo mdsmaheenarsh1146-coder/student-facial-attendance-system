@@ -1,57 +1,582 @@
 {% extends "base.html" %}
 
-{% block title %}Attendance Approvals{% endblock %}
+{% block title %}Attendance Approvals | Student Facial Attendance System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .approval-page {
+        max-width: 1150px;
+        margin: 0 auto;
+        padding: 20px 0 45px;
+    }
+
+    /* Header */
+    .approval-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 32px;
+        margin-bottom: 25px;
+        border-radius: 22px;
+        color: #ffffff;
+        background: linear-gradient(135deg, #115e59, #0f766e, #14b8a6);
+        box-shadow: 0 12px 30px rgba(15, 118, 110, 0.16);
+    }
+
+    .approval-hero::after {
+        content: "";
+        position: absolute;
+        width: 210px;
+        height: 210px;
+        top: -85px;
+        right: -45px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.09);
+    }
+
+    .approval-hero h2 {
+        position: relative;
+        z-index: 1;
+        margin: 0 0 10px;
+        font-size: 30px;
+        font-weight: 750;
+        letter-spacing: -0.5px;
+    }
+
+    .approval-hero p {
+        position: relative;
+        z-index: 1;
+        max-width: 650px;
+        margin: 0;
+        color: #d9fffa;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    /* Summary cards */
+    .approval-summary {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 32px;
+    }
+
+    .summary-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        min-width: 0;
+        padding: 22px;
+        border: 1px solid #e2eeee;
+        border-radius: 17px;
+        background: #ffffff;
+        box-shadow: 0 6px 22px rgba(15, 76, 75, 0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .summary-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 26px rgba(15, 76, 75, 0.09);
+    }
+
+    .summary-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 52px;
+        height: 52px;
+        border-radius: 15px;
+        font-size: 23px;
+        font-weight: 800;
+    }
+
+    .summary-pending .summary-icon {
+        color: #a16207;
+        background: #fef3c7;
+    }
+
+    .summary-approved .summary-icon {
+        color: #15803d;
+        background: #dcfce7;
+    }
+
+    .summary-rejected .summary-icon {
+        color: #b91c1c;
+        background: #fee2e2;
+    }
+
+    .summary-info {
+        min-width: 0;
+    }
+
+    .summary-info p {
+        margin: 0 0 5px;
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .summary-info h3 {
+        margin: 0;
+        color: #134e4a;
+        font-size: 27px;
+        font-weight: 800;
+    }
+
+    /* Section heading */
+    .approval-section-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 19px;
+    }
+
+    .approval-section-heading h3 {
+        margin: 0;
+        color: #134e4a;
+        font-size: 21px;
+        font-weight: 750;
+    }
+
+    .pending-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 12px;
+        border-radius: 20px;
+        color: #92400e;
+        background: #fef3c7;
+        font-size: 12px;
+        font-weight: 750;
+    }
+
+    .pending-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #d97706;
+    }
+
+    /* Attendance record cards */
+    .approval-records {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .attendance-card {
+        min-width: 0;
+        padding: 24px;
+        border: 1px solid #e2eeee;
+        border-radius: 18px;
+        background: #ffffff;
+        box-shadow: 0 7px 24px rgba(15, 76, 75, 0.06);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .attendance-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(15, 76, 75, 0.1);
+    }
+
+    .attendance-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        padding-bottom: 19px;
+        margin-bottom: 19px;
+        border-bottom: 1px solid #edf3f3;
+    }
+
+    .student-info {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        min-width: 0;
+    }
+
+    .student-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        color: #0f766e;
+        background: linear-gradient(135deg, #ccfbf1, #dbeafe);
+        font-size: 21px;
+        font-weight: 800;
+    }
+
+    .student-name {
+        overflow-wrap: anywhere;
+        margin: 0 0 5px;
+        color: #134e4a;
+        font-size: 17px;
+        font-weight: 750;
+    }
+
+    .student-caption {
+        margin: 0;
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .attendance-status {
+        flex-shrink: 0;
+        padding: 6px 10px;
+        border-radius: 20px;
+        color: #92400e;
+        background: #fef3c7;
+        font-size: 11px;
+        font-weight: 750;
+    }
+
+    .attendance-details {
+        display: grid;
+        gap: 15px;
+        margin-bottom: 22px;
+    }
+
+    .attendance-detail {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .attendance-detail-label {
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .attendance-detail-value {
+        overflow-wrap: anywhere;
+        color: #1e293b;
+        font-size: 13px;
+        font-weight: 700;
+        text-align: right;
+    }
+
+    /* Action buttons */
+    .attendance-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 11px;
+        padding-top: 19px;
+        border-top: 1px solid #edf3f3;
+    }
+
+    .attendance-actions form {
+        display: flex;
+        flex: 1;
+        min-width: 0;
+        margin: 0;
+    }
+
+    .attendance-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        min-height: 43px;
+        padding: 11px 15px;
+        border: none;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 750;
+        cursor: pointer;
+        transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .attendance-button:hover {
+        transform: translateY(-2px);
+    }
+
+    .approve-button {
+        color: #ffffff;
+        background: #0f766e;
+    }
+
+    .approve-button:hover {
+        background: #115e59;
+    }
+
+    .reject-button {
+        color: #b91c1c;
+        background: #fee2e2;
+    }
+
+    .reject-button:hover {
+        background: #fecaca;
+    }
+
+    /* Empty state */
+    .approval-empty {
+        grid-column: 1 / -1;
+        padding: 55px 24px;
+        border: 1px dashed #b7d8d5;
+        border-radius: 18px;
+        background: #f8fbfb;
+        text-align: center;
+    }
+
+    .empty-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 68px;
+        height: 68px;
+        margin: 0 auto 18px;
+        border-radius: 21px;
+        color: #0f766e;
+        background: #ccfbf1;
+        font-size: 30px;
+    }
+
+    .approval-empty h3 {
+        margin: 0 0 9px;
+        color: #134e4a;
+        font-size: 20px;
+        font-weight: 750;
+    }
+
+    .approval-empty p {
+        margin: 0;
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    @media (max-width: 850px) {
+        .approval-summary {
+            grid-template-columns: 1fr;
+            gap: 13px;
+        }
+
+        .summary-card {
+            padding: 18px;
+        }
+
+        .approval-records {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 520px) {
+        .approval-page {
+            padding-top: 10px;
+        }
+
+        .approval-hero {
+            padding: 25px 20px;
+        }
+
+        .approval-hero h2 {
+            font-size: 25px;
+        }
+
+        .attendance-card {
+            padding: 19px;
+        }
+
+        .attendance-card-header {
+            flex-direction: column;
+        }
+
+        .attendance-actions {
+            flex-direction: column;
+        }
+
+        .attendance-actions form {
+            width: 100%;
+        }
+
+        .attendance-detail {
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .attendance-detail-value {
+            text-align: left;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="approval-page">
 
-<h2>Attendance Approvals</h2>
+    <!-- Dashboard header -->
+    <section class="approval-hero">
+        <h2>Attendance Approvals</h2>
+        <p>
+            Review student attendance submissions and approve or reject
+            individual records. Keep track of pending and processed requests
+            from one dashboard.
+        </p>
+    </section>
 
-<p>Pending: {{ summary.pending }}</p>
-<p>Approved: {{ summary.approved }}</p>
-<p>Rejected: {{ summary.rejected }}</p>
+    <!-- Attendance summary -->
+    <section class="approval-summary">
 
-<hr>
+        <div class="summary-card summary-pending">
+            <div class="summary-icon" aria-hidden="true">◷</div>
+            <div class="summary-info">
+                <p>Pending Requests</p>
+                <h3>{{ summary.pending }}</h3>
+            </div>
+        </div>
 
-<h3>Pending Attendance Records</h3>
+        <div class="summary-card summary-approved">
+            <div class="summary-icon" aria-hidden="true">✓</div>
+            <div class="summary-info">
+                <p>Approved Records</p>
+                <h3>{{ summary.approved }}</h3>
+            </div>
+        </div>
 
-{% for record in pending_records %}
+        <div class="summary-card summary-rejected">
+            <div class="summary-icon" aria-hidden="true">×</div>
+            <div class="summary-info">
+                <p>Rejected Records</p>
+                <h3>{{ summary.rejected }}</h3>
+            </div>
+        </div>
 
-<div>
-    <p><strong>Student:</strong> {{ record.student.username }}</p>
+    </section>
 
-    <p><strong>Date:</strong> {{ record.attendance_date }}</p>
+    <!-- Pending attendance list -->
+    <section class="approval-section">
 
-    <p><strong>Status:</strong> {{ record.get_status_display }}</p>
+        <div class="approval-section-heading">
+            <h3>Pending Attendance Records</h3>
 
-    <!-- Approve Button -->
-    <form method="post" action="{% url 'approve_attendance' record.id %}" style="display: inline;">
+            <span class="pending-label">
+                <span class="pending-dot"></span>
+                Awaiting Review
+            </span>
+        </div>
 
-        {% csrf_token %}
+        <div class="approval-records">
 
-        <button type="submit">Approve</button>
+            {% for record in pending_records %}
 
-    </form>
+                <article class="attendance-card">
 
-    <!-- Reject Button -->
-    <form method="post" action="{% url 'reject_attendance' record.id %}" style="display: inline;"
-        onsubmit="return confirm('Are you sure you want to reject this attendance?');">
+                    <div class="attendance-card-header">
 
-        {% csrf_token %}
+                        <div class="student-info">
+                            <div class="student-avatar" aria-hidden="true">
+                                {{ record.student.username|first|upper }}
+                            </div>
 
-        <button type="submit">Reject</button>
+                            <div>
+                                <h4 class="student-name">
+                                    {{ record.student.username }}
+                                </h4>
+                                <p class="student-caption">
+                                    Student attendance request
+                                </p>
+                            </div>
+                        </div>
 
-    </form>
+                        <span class="attendance-status">
+                            {{ record.get_status_display }}
+                        </span>
+
+                    </div>
+
+                    <div class="attendance-details">
+
+                        <div class="attendance-detail">
+                            <span class="attendance-detail-label">
+                                Student
+                            </span>
+                            <span class="attendance-detail-value">
+                                {{ record.student.username }}
+                            </span>
+                        </div>
+
+                        <div class="attendance-detail">
+                            <span class="attendance-detail-label">
+                                Attendance Date
+                            </span>
+                            <span class="attendance-detail-value">
+                                {{ record.attendance_date }}
+                            </span>
+                        </div>
+
+                        <div class="attendance-detail">
+                            <span class="attendance-detail-label">
+                                Current Status
+                            </span>
+                            <span class="attendance-detail-value">
+                                {{ record.get_status_display }}
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="attendance-actions">
+
+                        <form
+                            method="post"
+                            action="{% url 'approve_attendance' record.id %}"
+                        >
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="attendance-button approve-button"
+                            >
+                                ✓ Approve
+                            </button>
+                        </form>
+
+                        <form
+                            method="post"
+                            action="{% url 'reject_attendance' record.id %}"
+                            onsubmit="return confirm('Are you sure you want to reject this attendance?');"
+                        >
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="attendance-button reject-button"
+                            >
+                                ✕ Reject
+                            </button>
+                        </form>
+
+                    </div>
+
+                </article>
+
+            {% empty %}
+
+                <div class="approval-empty">
+                    <div class="empty-icon" aria-hidden="true">✓</div>
+
+                    <h3>All Caught Up!</h3>
+
+                    <p>
+                        There are no pending attendance records to review.
+                        New submissions will appear here when available.
+                    </p>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
 
 </div>
-
-<hr>
-
-
-{% empty %}
-
-<p>No pending attendance.</p>
-
-
-{% endfor %}
-
 {% endblock %}
